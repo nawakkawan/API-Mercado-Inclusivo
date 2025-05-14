@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import router from './src/routes/index.js';
+import corsMiddleware from './src/middleware/cors.js';
 
 // Carregar variáveis de ambiente do arquivo .env
 dotenv.config();
@@ -8,10 +10,12 @@ dotenv.config();
 const app = express();
 
 // Middleware para habilitar CORS
-app.use(cors());
+app.use(corsMiddleware);
 
 // Middleware para parse de JSON no corpo da requisição
 app.use(express.json());
+
+app.use(router);
 
 // Rota de exemplo
 app.get('/', (req, res) => {
@@ -29,4 +33,3 @@ app.get('/vagas', (req, res) => {
 
 // Exporte o app para ser usado em server.js
 export default app;
-``
