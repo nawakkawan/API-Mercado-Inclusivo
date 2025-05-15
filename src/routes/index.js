@@ -1,9 +1,11 @@
 import express from 'express';
 import usuarioRoutes from './usuario.route.js';
+import candidaturaRoutes from './candidatura.route.js';
 
 const router = express.Router();
 
 router.use('/usuarios', usuarioRoutes);
+router.use('/candidaturas', candidaturaRoutes);
 
 export default router;
 // Aqui você pode adicionar outras rotas principais do seu aplicativo
