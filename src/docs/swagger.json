@@ -47,7 +47,8 @@
                 "schema": { "$ref": "#/components/schemas/Usuario" }
               }
             }
-          }
+          },
+          "400": { "description": "Erro na requisição" }
         }
       }
     },
@@ -93,7 +94,8 @@
           }
         },
         "responses": {
-          "200": { "description": "Usuário atualizado" }
+          "200": { "description": "Usuário atualizado" },
+          "400": { "description": "Erro na requisição" }
         }
       },
       "delete": {
@@ -107,7 +109,111 @@
           }
         ],
         "responses": {
-          "204": { "description": "Usuário removido" }
+          "204": { "description": "Usuário removido" },
+          "404": { "description": "Usuário não encontrado" }
+        }
+      }
+    },
+
+    "/candidaturas": {
+      "get": {
+        "summary": "Lista todas as candidaturas",
+        "responses": {
+          "200": {
+            "description": "Lista de candidaturas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Candidatura" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria uma nova candidatura",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Candidatura" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Candidatura criada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Candidatura" }
+              }
+            }
+          },
+          "400": { "description": "Erro na requisição" }
+        }
+      }
+    },
+    "/candidaturas/{id}": {
+      "get": {
+        "summary": "Busca candidatura por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Candidatura encontrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Candidatura" }
+              }
+            }
+          },
+          "404": { "description": "Candidatura não encontrada" }
+        }
+      },
+      "put": {
+        "summary": "Atualiza candidatura",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Candidatura" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Candidatura atualizada" },
+          "400": { "description": "Erro na requisição" }
+        }
+      },
+      "delete": {
+        "summary": "Remove candidatura",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Candidatura removida" },
+          "404": { "description": "Candidatura não encontrada" }
         }
       }
     }
@@ -123,7 +229,21 @@
           "senha": { "type": "string" },
           "tipo": { "type": "string", "enum": ["PCD", "empresa"] },
           "deficiencia": { "type": "string" }
-        }
+        },
+        "required": ["nome", "email", "senha", "tipo"]
+      },
+      "Candidatura": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "status": {
+            "type": "string",
+            "enum": ["pendente", "aprovado", "rejeitado"]
+          },
+          "usuarioId": { "type": "integer" },
+          "vagaId": { "type": "integer" }
+        },
+        "required": ["usuarioId", "vagaId"]
       }
     }
   }
