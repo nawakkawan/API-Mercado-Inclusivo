@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import router from './src/routes/index.js'; // Importa o roteador principal
 import corsMiddleware from './src/middleware/cors.js';

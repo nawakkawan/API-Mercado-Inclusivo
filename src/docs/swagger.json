@@ -114,7 +114,6 @@
         }
       }
     },
-
     "/candidaturas": {
       "get": {
         "summary": "Lista todas as candidaturas",
@@ -216,6 +215,108 @@
           "404": { "description": "Candidatura não encontrada" }
         }
       }
+    },
+    "/vagas": {
+      "get": {
+        "summary": "Lista todas as vagas",
+        "responses": {
+          "200": {
+            "description": "Lista de vagas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Vaga" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria uma nova vaga",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Vaga" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vaga criada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Vaga" }
+              }
+            }
+          },
+          "400": { "description": "Erro na requisição" }
+        }
+      }
+    },
+    "/vagas/{id}": {
+      "get": {
+        "summary": "Busca vaga por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vaga encontrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Vaga" }
+              }
+            }
+          },
+          "404": { "description": "Vaga não encontrada" }
+        }
+      },
+      "put": {
+        "summary": "Atualiza vaga",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Vaga" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Vaga atualizada" },
+          "400": { "description": "Erro na requisição" }
+        }
+      },
+      "delete": {
+        "summary": "Remove vaga",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Vaga removida" },
+          "404": { "description": "Vaga não encontrada" }
+        }
+      }
     }
   },
   "components": {
@@ -244,6 +345,18 @@
           "vagaId": { "type": "integer" }
         },
         "required": ["usuarioId", "vagaId"]
+      },
+      "Vaga": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "titulo": { "type": "string" },
+          "descricao": { "type": "string" },
+          "local": { "type": "string" },
+          "salario": { "type": "number" },
+          "empresaId": { "type": "integer" }
+        },
+        "required": ["titulo", "descricao", "local", "salario", "empresaId"]
       }
     }
   }
