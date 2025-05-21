@@ -1,6 +1,6 @@
 import request from 'supertest';
-import { app } from '../../server.js';
-import Empresa from '../../models/empresa.model.js';
+import  app  from '../../app.js';
+import Empresa from '../models/empresa.model.js';
 
 // Mock completo do modelo Empresa
 jest.mock('../../models/empresa.model.js');
