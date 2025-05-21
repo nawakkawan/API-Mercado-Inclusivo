@@ -1,6 +1,7 @@
 import express from 'express';
 import usuarioRoutes from './usuario.route.js';
 import candidaturaRoutes from './candidatura.route.js';
+import empresaRoutes from './empresa.route.js';
 import vagaRoutes from './vaga.route.js';
 
 const router = express.Router();
@@ -8,6 +9,7 @@ const router = express.Router();
 router.use('/usuarios', usuarioRoutes);
 router.use('/candidaturas', candidaturaRoutes);
 router.use('/vagas', vagaRoutes);
+router.use('/empresas', empresaRoutes);
 
 export default router;
 // Aqui você pode adicionar outras rotas principais do seu aplicativo

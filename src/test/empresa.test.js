@@ -1,74 +1,71 @@
 import request from 'supertest';
-import  app  from '../../app.js';
-import Empresa from '../models/empresa.model.js';
+import app from '../../app.js';
+import { setupDatabase, closeDatabase } from '../config/database.js';
 
-// Mock completo do modelo Empresa
-jest.mock('../../models/empresa.model.js');
+let empresaId;
 
-describe('Rotas de Empresa (com mocks)', () => {
-  beforeEach(() => {
-    // Resetar todos os mocks antes de cada teste
-    Empresa.mockClear();
-  });
+beforeAll(async () => {
+  await setupDatabase();
+});
 
-  test('POST /api/empresas - criar empresa com sucesso', async () => {
-    const mockEmpresa = {
-      id: 1,
-      nome: 'Empresa Teste',
-      cnpj: '12345678901234',
-      email: 'teste@empresa.com'
-    };
+afterAll(async () => {
+  await closeDatabase();
+});
 
-    // Mock da função create
-    Empresa.create.mockResolvedValue(mockEmpresa);
+describe('Testes CRUD para Empresa', () => {
+  test('Cria uma nova empresa', async () => {
+    const res = await request(app).post('/empresas').send({
+      nome: 'Empresa Exemplo',
+      cnpj: '12345678000199',
+      email: 'empresa@exemplo.com',
+      senha: '123456'
+    });
 
-    const response = await request(app)
-      .post('/api/empresas')
-      .send(mockEmpresa);
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty('id');
+    expect(res.body.nome).toBe('Empresa Exemplo');
+    expect(res.body.cnpj).toBe('12345678000199');
+    expect(res.body.email).toBe('empresa@exemplo.com');
+    empresaId = res.body.id;
+  }, 20000);
 
-    expect(response.status).toBe(201);
-    expect(response.body).toEqual(mockEmpresa);
-    expect(Empresa.create).toHaveBeenCalledWith(mockEmpresa);
-  });
+  test('Lista todas as empresas', async () => {
+    const res = await request(app).get('/empresas');
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThan(0);
 
-  test('GET /api/empresas - listar empresas', async () => {
-    const mockEmpresas = [
-      { id: 1, nome: 'Empresa 1' },
-      { id: 2, nome: 'Empresa 2' }
-    ];
+    expect(res.body[0]).toHaveProperty('id');
+    expect(res.body[0]).toHaveProperty('nome');
+    expect(res.body[0]).toHaveProperty('cnpj');
+    expect(res.body[0]).toHaveProperty('email');
+  }, 20000);
 
-    // Mock da função findAll
-    Empresa.findAll.mockResolvedValue(mockEmpresas);
+  test('Busca empresa por ID', async () => {
+    expect(empresaId).toBeDefined();
+    const res = await request(app).get(`/empresas/${empresaId}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.id).toBe(empresaId);
+  }, 20000);
 
-    const response = await request(app)
-      .get('/api/empresas');
+  test('Atualiza empresa', async () => {
+    expect(empresaId).toBeDefined();
+    const res = await request(app).put(`/empresas/${empresaId}`).send({
+      nome: 'Empresa Atualizada',
+      cnpj: '98765432000111',
+      email: 'atualizado@empresa.com'
+    });
 
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(mockEmpresas);
-  });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.nome).toBe('Empresa Atualizada');
+    expect(res.body.cnpj).toBe('98765432000111');
+    expect(res.body.email).toBe('atualizado@empresa.com');
+  }, 20000);
 
-  test('GET /api/empresas/:id - buscar empresa existente', async () => {
-    const mockEmpresa = { id: 1, nome: 'Empresa Teste' };
-    
-    // Mock da função findByPk
-    Empresa.findByPk.mockResolvedValue(mockEmpresa);
-
-    const response = await request(app)
-      .get('/api/empresas/1');
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual(mockEmpresa);
-    expect(Empresa.findByPk).toHaveBeenCalledWith('1');
-  });
-
-  test('GET /api/empresas/:id - empresa não encontrada', async () => {
-    // Mock da função findByPk retornando null
-    Empresa.findByPk.mockResolvedValue(null);
-
-    const response = await request(app)
-      .get('/api/empresas/999');
-
-    expect(response.status).toBe(404);
-    expect(response.body).toEqual({ erro: 'Empresa não encontrada' });
-  });
+  test('Deleta empresa', async () => {
+    expect(empresaId).toBeDefined();
+    const res = await request(app).delete(`/empresas/${empresaId}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ mensagem: 'Empresa removida com sucesso' });
+  }, 20000);
 });

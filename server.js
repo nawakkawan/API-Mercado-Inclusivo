@@ -10,7 +10,17 @@ const __dirname = path.dirname(__filename);
 
 // Caminho ajustado para src/docs/swagger.json
 const swaggerFilePath = path.join(__dirname, 'src', 'docs', 'swagger.json');
-const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, 'utf-8'));
+
+let swaggerDocument = {};
+try {
+  if (fs.existsSync(swaggerFilePath)) {
+    swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, 'utf-8'));
+  } else {
+    console.warn('Arquivo Swagger não encontrado. Documentação não será carregada.');
+  }
+} catch (err) {
+  console.error('Erro ao carregar o arquivo Swagger:', err.message);
+}
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

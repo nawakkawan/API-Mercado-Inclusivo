@@ -1,18 +1,18 @@
 import request from 'supertest';
-import app from '../../app.js'; // caminho relativo correto
-import sequelize from '../config/database.js'; // mesma estrutura do teste de usuário
+import app from '../../app.js';
+import { setupDatabase, closeDatabase } from '../config/database.js';
 
 let vagaId;
 
 beforeAll(async () => {
-  await sequelize.sync({ force: true });
+  await setupDatabase();
 });
 
 afterAll(async () => {
-  await sequelize.close();
+  await closeDatabase();
 });
 
-describe('Testes de CRUD para Vagas', () => {
+describe('Testes CRUD para Vagas', () => {
   test('Cria uma nova vaga', async () => {
     const res = await request(app).post('/vagas').send({
       titulo: 'Analista de Dados Jr',
@@ -24,6 +24,7 @@ describe('Testes de CRUD para Vagas', () => {
 
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('id');
+    expect(res.body.titulo).toBe('Analista de Dados Jr');
     vagaId = res.body.id;
   }, 20000);
 
@@ -35,12 +36,14 @@ describe('Testes de CRUD para Vagas', () => {
   }, 20000);
 
   test('Busca uma vaga por ID', async () => {
+    expect(vagaId).toBeDefined();  // Garantir que vagaId existe
     const res = await request(app).get(`/vagas/${vagaId}`);
     expect(res.statusCode).toBe(200);
     expect(res.body.titulo).toBe('Analista de Dados Jr');
   }, 20000);
 
   test('Atualiza uma vaga', async () => {
+    expect(vagaId).toBeDefined();
     const res = await request(app).put(`/vagas/${vagaId}`).send({
       titulo: 'Analista de Dados Pleno'
     });
@@ -49,6 +52,7 @@ describe('Testes de CRUD para Vagas', () => {
   }, 20000);
 
   test('Deleta uma vaga', async () => {
+    expect(vagaId).toBeDefined();
     const res = await request(app).delete(`/vagas/${vagaId}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty('mensagem');

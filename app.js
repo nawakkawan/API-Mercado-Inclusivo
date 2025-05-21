@@ -19,4 +19,10 @@ app.get('/', (req, res) => {
   res.send('API Vagas Inclusivas - Online!');
 });
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Erro interno do servidor.' });
+});
+
+
 export default app;
