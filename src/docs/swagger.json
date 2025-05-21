@@ -317,6 +317,108 @@
           "404": { "description": "Vaga não encontrada" }
         }
       }
+    },
+    "/empresas": {
+      "get": {
+        "summary": "Lista todas as empresas",
+        "responses": {
+          "200": {
+            "description": "Lista de empresas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Empresa" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cria uma nova empresa",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Empresa" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Empresa criada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Empresa" }
+              }
+            }
+          },
+          "400": { "description": "Erro na requisição" }
+        }
+      }
+    },
+    "/empresas/{id}": {
+      "get": {
+        "summary": "Busca empresa por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa encontrada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Empresa" }
+              }
+            }
+          },
+          "404": { "description": "Empresa não encontrada" }
+        }
+      },
+      "put": {
+        "summary": "Atualiza empresa",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Empresa" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Empresa atualizada" },
+          "400": { "description": "Erro na requisição" }
+        }
+      },
+      "delete": {
+        "summary": "Remove empresa",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Empresa removida" },
+          "404": { "description": "Empresa não encontrada" }
+        }
+      }
     }
   },
   "components": {
@@ -357,7 +459,20 @@
           "empresaId": { "type": "integer" }
         },
         "required": ["titulo", "descricao", "local", "salario", "empresaId"]
+      },
+      "Empresa": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "nome": { "type": "string" },
+          "cnpj": { "type": "string" },
+          "endereco": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "telefone": { "type": "string" }
+        },
+        "required": ["nome", "cnpj", "email"]
       }
     }
   }
 }
+
