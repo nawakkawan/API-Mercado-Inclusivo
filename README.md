@@ -96,11 +96,11 @@ Equipe Squad 5, comprometida com impacto social, acessibilidade e inclusão digi
 
 | Nome             | Função              |
 |------------------|---------------------|
-| Ana Silva        | Desenvolvedora Backend | 
-| Bruno Ferreira   | Desenvolvedor Backend | 
-| Carla Souza      | QA / Testes          | 
-| Diego Martins    | DevOps / Infra       |
-| Elisa Rodrigues  | Gerente de Produto   | 
+| Fábio Kawan Freitas Júnior      | Líder | 
+| Deivid Jose Leal Caldas   | Colaborador/a | 
+|  Luiz Vinicius Ferreira dos santos      | Colaborador/a         | 
+| Matheus Henrique Silva Nascimento    | Colaborador/a       |
+| Julia Tito Assunção  | Colaborador/a   | 
 
 ---
 
